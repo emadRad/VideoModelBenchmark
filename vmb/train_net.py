@@ -104,7 +104,6 @@ def eval_epoch(val_loader, model, val_meter, cur_epoch, device):
         cur_epoch (int): number of the current epoch of training.
         device (torch.device):
     """
-    # Evaluation mode enabled. The running stats would not be updated.
     model.eval()
     val_meter.iter_tic()
     logger.info(f"Validation Started")
@@ -113,11 +112,7 @@ def eval_epoch(val_loader, model, val_meter, cur_epoch, device):
         enumerate(val_loader), total=len(val_loader)
     ):
         # Transfer the data to the current GPU device.
-        if isinstance(inputs, (list,)):
-            for i in range(len(inputs)):
-                inputs[i] = inputs[i].to(device)
-        else:
-            inputs = inputs.to(device)
+        inputs = inputs.to(device)
         labels = labels.to(device)
 
         preds = model(inputs)
