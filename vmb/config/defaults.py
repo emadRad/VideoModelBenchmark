@@ -108,7 +108,7 @@ _C.DATA = CfgNode()
 _C.DATA.PATH_TO_DATA_DIR = "/data/kinetics20"
 
 # overwrite the precomputed timestamps and fps
-_C.DATA.OVERWRITE_METADATA = False
+_C.DATA.OVERWRITE_METADATA = True
 
 # Decoding backend, options include `pyav` or `torchvision`
 _C.DATA.DECODING_BACKEND = "pyav"
