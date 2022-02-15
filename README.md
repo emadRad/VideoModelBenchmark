@@ -11,6 +11,7 @@ Please find installation instructions in [INSTALL.md](INSTALL.md). You may follo
 Follow the example in [GETTING_STARTED.md](GETTING_STARTED.md).
 
 ## Benchmark Score
+The code should not be changed other than some settings regarding resources such as the num of cpus (DATA_LOADER.NUM_WORKERS) and number of gpus (NUM_GPUS).
 
 score = t_ref / t_bench * (n_gpu_ref / n_gpu_bench)
 
