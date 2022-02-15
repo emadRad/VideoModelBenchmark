@@ -10,6 +10,14 @@ Please find installation instructions in [INSTALL.md](INSTALL.md). You may follo
 
 Follow the example in [GETTING_STARTED.md](GETTING_STARTED.md).
 
+## Benchmark Score
+
+score = t_ref / t_bench * (n_gpu_ref / n_gpu_bench)
+
+- **t_ref**: time to top1 accuracy 5.16 on our reference machine with **n_gpu_ref** gpus
+- **t_bench**: time to top1 accuracy 5.16 on test machine with **n_gpu_bench** gpus
+
+
 
 ## License
 The majority of this work is licensed under [Apache 2.0 license](LICENSE). Portions of the project are available under separate license terms: [SlowFast](https://github.com/facebookresearch/SlowFast) and [3D-ResNets-PyTorch](https://github.com/kenshohara/3D-ResNets-PyTorch).
