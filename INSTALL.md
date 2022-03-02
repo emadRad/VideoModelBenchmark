@@ -1,5 +1,12 @@
 # Installation
 
+- Clone this repo:
+
+```bash
+git clone https://github.com/emadRad/VideoModelBenchmark.git
+cd VideoModelBenchmark
+```
+
 ## Docker 
 ### Installing Docker
 To use the docker for running the code you need the following packages to be installed on ubuntu:
