@@ -31,6 +31,7 @@ cd docker/
 docker build -t video_benchmark .
 ```
 
+<!--
 ## Conda Environment
 ### Create Environment
 If environment is not created, you can create it by running:
@@ -43,3 +44,4 @@ If environment is created, you can update it by running:
 conda env update --name vml --file docker/environment.yml
 ```
 
+-->
