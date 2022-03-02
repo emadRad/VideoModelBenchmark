@@ -26,6 +26,8 @@ docker run --gpus '"device=0,1,2,3"' --rm --user $(id -u):$(id -g) \
             NUM_GPUS 4
             
 ```
+
+You will find the results in the results directory.
             
 ## Results
 
