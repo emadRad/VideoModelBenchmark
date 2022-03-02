@@ -25,4 +25,10 @@ docker run --gpus '"device=0,1,2,3"' --rm --user $(id -u):$(id -g) \
             TRAIN.BATCH_SIZE 64 \
             NUM_GPUS 4
             
-            ```
+```
+            
+## Results
+
+| Machine | GPUs |val acc@1 | NUM_GPUs | BATCH_SIZE | Epochs | NUM_WORKERS | Elapsed Time |
+|:---:|:---:|:---:|:---:| :---:| :---:|:---:| :---:|
+| CVG-SRV05 | 4 X NVIDIA TITAN RTX | 20.11 | 4 | 16 | 20 | 8 | 7456.88 | 
