@@ -4,11 +4,15 @@
 
 ## Installation
 
-Please find installation instructions in [INSTALL.md](INSTALL.md). You may follow the instructions in [DATASET.md](sgs/datasets/DATASET.md) to prepare the datasets.
+Please find installation instructions in [INSTALL.md](INSTALL.md).
 
 ## Quick Start
 
 Follow the example in [GETTING_STARTED.md](GETTING_STARTED.md).
+
+### Dataset
+The dataset can be found in *data/kinetics20* folder. 
+For further information regarding the dataset (such as license), please refer to [Kinetics-dataset](https://github.com/cvdfoundation/kinetics-dataset).
 
 ## Benchmark Score
 The code should not be changed other than some settings regarding resources such as the num of cpus (DATA_LOADER.NUM_WORKERS) and number of gpus (NUM_GPUS).
