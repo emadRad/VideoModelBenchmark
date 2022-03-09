@@ -8,6 +8,8 @@ logs.txt
 results/
 experiments/
 debug/
+data/kinetics20/train_metadata.pkl
+data/kinetics20/val_metadata.pkl
 pretrain/
 # Byte-compiled / optimized / DLL files
 #
