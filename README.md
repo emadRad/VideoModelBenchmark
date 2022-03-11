@@ -11,7 +11,7 @@ Please find installation instructions in [INSTALL.md](INSTALL.md).
 Follow the example in [GETTING_STARTED.md](GETTING_STARTED.md).
 
 ### Dataset
-The dataset can be found in *data/kinetics20* folder. 
+The dataset is 800MB and can be found in *data/kinetics20* folder. 
 For further information regarding the dataset (such as license), please refer to [Kinetics-dataset](https://github.com/cvdfoundation/kinetics-dataset).
 
 ## Benchmark Score
