@@ -28,10 +28,3 @@ docker run --gpus '"device=0,1,2,3"' --rm --user $(id -u):$(id -g) \
 ```
 
 You will find the results in the results directory.
-            
-## Results
-
-| Machine | GPUs |val acc@1 | NUM_GPUs | BATCH_SIZE | Epochs | NUM_WORKERS | Experiment | Elapsed Time |
-|:---:|:---:|:---:|:---:| :---:| :---:|:---:| :---:| :---:|
-| CVG-SRV05 | 4 X NVIDIA TITAN RTX | 20.11 | 4 | 16 | 20 | 8 | Kinetics/X3D_M.yaml | 7456.88 | 
-| CVG-SRV05 | 4 X NVIDIA TITAN RTX | 20.59 | 4 | 16 | 20 | 8 | Kinetics/MVIT_B_16x4.yaml | 7725.12 |
