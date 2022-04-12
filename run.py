@@ -105,12 +105,12 @@ def main():
     if cfg.TRAIN.ENABLE:
         val_top1_acc = train(cfg=cfg)
         timer.pause()
-        result_dict = {"val_top1_acc": val_top1_acc,
+        result_dict = {"val_top1_acc": round(val_top1_acc, 2),
                        "num_gpus": cfg.NUM_GPUS,
                        "batch_size": cfg.TRAIN.BATCH_SIZE,
                        "num_epochs": cfg.SOLVER.MAX_EPOCH,
                        "num_workers": cfg.DATA_LOADER.NUM_WORKERS,
-                       "elapsed_time_in_sec": timer.seconds()}
+                       "elapsed_time_in_sec": round(timer.seconds(), 3)}
         with open(result_file, "a") as f:
             writer = csv.DictWriter(f, fieldnames=result_dict.keys())
             writer.writeheader()
