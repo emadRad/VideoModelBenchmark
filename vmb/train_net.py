@@ -17,6 +17,7 @@ from vmb.datasets import loader
 from vmb.models import model_builder
 from vmb.utils.meters import TrainMeter, ValMeter
 from torch.utils.tensorboard import SummaryWriter
+from torch.profiler import profile, record_function, ProfilerActivity
 
 import vmb.utils.logging as logging
 
@@ -45,52 +46,56 @@ def train_epoch(
     data_size = len(train_loader)
     lr = optim.get_epoch_lr(optimizer)
     loss_fun = losses.get_loss_func(cfg.MODEL.LOSS_FUNC)()
+    with profile(activities=[ProfilerActivity.CUDA]) as prof:
+        with record_function("model_train"):
+            for cur_iter, (inputs, labels) in tqdm(
+                enumerate(train_loader), total=data_size
+            ):
+                inputs = inputs.to(device)
+                labels = labels.to(device)
 
-    for cur_iter, (inputs, labels) in tqdm(
-        enumerate(train_loader), total=data_size
-    ):
-        inputs = inputs.to(device)
-        labels = labels.to(device)
+                # Perform the forward pass.
+                preds = model(inputs)
 
-        # Perform the forward pass.
-        preds = model(inputs)
+                # Compute the loss.
+                loss = loss_fun(preds, labels)
 
-        # Compute the loss.
-        loss = loss_fun(preds, labels)
+                # check Nan Loss.
+                misc.check_nan_losses(loss, model, optimizer, cfg, cur_epoch, cur_iter)
 
-        # check Nan Loss.
-        misc.check_nan_losses(loss, model, optimizer, cfg, cur_epoch, cur_iter)
+                loss.backward()
 
-        loss.backward()
+                # Update the parameters.
+                optimizer.step()
+                # Zero grad.
+                optimizer.zero_grad()
 
-        # Update the parameters.
-        optimizer.step()
-        # Zero grad.
-        optimizer.zero_grad()
+                # Compute the errors.
+                num_topks_correct = metrics.topks_correct(preds, labels, (1, 5))
+                top1_err, top5_err = [
+                    (1.0 - x / preds.size(0)) * 100.0 for x in num_topks_correct
+                ]
 
-        # Compute the errors.
-        num_topks_correct = metrics.topks_correct(preds, labels, (1, 5))
-        top1_err, top5_err = [
-            (1.0 - x / preds.size(0)) * 100.0 for x in num_topks_correct
-        ]
+                loss, top1_err, top5_err = (
+                    loss.item(),
+                    top1_err.item(),
+                    top5_err.item(),
+                )
+                train_meter.iter_toc()
 
-        loss, top1_err, top5_err = (
-            loss.item(),
-            top1_err.item(),
-            top5_err.item(),
-        )
-        train_meter.iter_toc()
+                # Update and log stats.
+                train_meter.update_stats(top1_err, top5_err, loss, lr, inputs[0].size(0))
 
-        # Update and log stats.
-        train_meter.update_stats(top1_err, top5_err, loss, lr, inputs[0].size(0))
+                train_meter.log_stats_tensorboard()
+                train_meter.log_iter_stats(cur_epoch, cur_iter)
+                train_meter.iter_tic()
 
-        train_meter.log_stats_tensorboard()
-        train_meter.log_iter_stats(cur_epoch, cur_iter)
-        train_meter.iter_tic()
-
-    # Log epoch stats.
-    train_meter.log_epoch_stats(cur_epoch)
-    train_meter.reset()
+            # Log epoch stats.
+            train_meter.log_epoch_stats(cur_epoch)
+            train_meter.reset()
+    epoch_total_sec = misc.format_time_in_sec(prof.key_averages().total_average().cuda_time_total)
+    logger.info(f"Epoch {cur_epoch} took {epoch_total_sec} seconds on GPU(s).")
+    return epoch_total_sec
 
 
 @torch.no_grad()
@@ -224,13 +229,13 @@ def train(cfg):
     logger.info("Process PID {}".format(os.getpid()))
     # Perform the training loop.
     logger.info("Start epoch: {}".format(start_epoch + 1))
-
+    sum_epoch_times = 0
     for cur_epoch in range(start_epoch, cfg.SOLVER.MAX_EPOCH):
         # Train for one epoch.
-        train_epoch(
+        epoch_time_sec = train_epoch(
             train_loader, model, optimizer, train_meter, cur_epoch, cfg, device
         )
-
+        sum_epoch_times += epoch_time_sec
         # Save a checkpoint.
         if cu.is_checkpoint_epoch(cur_epoch, cfg.TRAIN.CHECKPOINT_PERIOD):
             logger.info("Saving checkpoint")
@@ -244,4 +249,5 @@ def train(cfg):
 
         scheduler.step()
     writer.flush()
-    return top1_acc
+    avg_epoch_sec = sum_epoch_times / cfg.SOLVER.MAX_EPOCH
+    return top1_acc, avg_epoch_sec
