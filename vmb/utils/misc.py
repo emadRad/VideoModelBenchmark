@@ -11,12 +11,6 @@ from vmb.utils.checkpoint import get_checkpoint_dir
 logger = logging.get_logger(__name__)
 
 
-def format_time_in_sec(time_us):
-    """Defines how to format time in FunctionEvent"""
-    US_IN_SECOND = 1000.0 * 1000.0
-    return time_us / US_IN_SECOND
-
-
 def check_nan_losses(loss, model, optimizer, cfg, cur_epoch, cur_iter):
     """
     Determine whether the loss is NaN (not a number).

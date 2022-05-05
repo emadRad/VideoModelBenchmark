@@ -17,7 +17,6 @@ from vmb.datasets import loader
 from vmb.models import model_builder
 from vmb.utils.meters import TrainMeter, ValMeter
 from torch.utils.tensorboard import SummaryWriter
-from fvcore.common.timer import Timer
 
 import vmb.utils.logging as logging
 
@@ -47,13 +46,9 @@ def train_epoch(
     lr = optim.get_epoch_lr(optimizer)
     loss_fun = losses.get_loss_func(cfg.MODEL.LOSS_FUNC)()
 
-    total_time = 0.0
     for cur_iter, (inputs, labels) in tqdm(
         enumerate(train_loader), total=data_size
     ):
-
-        timer = Timer()
-        timer.reset()
         inputs = inputs.to(device)
         labels = labels.to(device)
 
@@ -84,10 +79,6 @@ def train_epoch(
             top1_err.item(),
             top5_err.item(),
         )
-
-        if cur_iter > 0:
-            total_time += timer.seconds()
-
         train_meter.iter_toc()
 
         # Update and log stats.
@@ -100,8 +91,6 @@ def train_epoch(
     # Log epoch stats.
     train_meter.log_epoch_stats(cur_epoch)
     train_meter.reset()
-    logger.info("Total time for epoch {}: {:.2f}".format(cur_epoch+1, total_time))
-    return total_time
 
 
 @torch.no_grad()
@@ -235,13 +224,12 @@ def train(cfg):
     logger.info("Process PID {}".format(os.getpid()))
     # Perform the training loop.
     logger.info("Start epoch: {}".format(start_epoch + 1))
-    sum_train_times = 0
+
     for cur_epoch in range(start_epoch, cfg.SOLVER.MAX_EPOCH):
         # Train for one epoch.
-        epoch_time = train_epoch(
+        train_epoch(
             train_loader, model, optimizer, train_meter, cur_epoch, cfg, device
         )
-        sum_train_times += epoch_time
 
         # Save a checkpoint.
         if cu.is_checkpoint_epoch(cur_epoch, cfg.TRAIN.CHECKPOINT_PERIOD):
@@ -256,5 +244,4 @@ def train(cfg):
 
         scheduler.step()
     writer.flush()
-    avg_train_sec = sum_train_times / cfg.SOLVER.MAX_EPOCH
-    return top1_acc, avg_train_sec
+    return top1_acc

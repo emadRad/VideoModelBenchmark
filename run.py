@@ -103,15 +103,14 @@ def main():
     cu.make_checkpoint_dir(cfg.OUTPUT_DIR, cfg.EXPR_NUM)
     # Perform training.
     if cfg.TRAIN.ENABLE:
-        val_top1_acc, avg_train_sec = train(cfg=cfg)
+        val_top1_acc = train(cfg=cfg)
         timer.pause()
-        result_dict = {"val_top1_acc": round(val_top1_acc, 2),
+        result_dict = {"val_top1_acc": val_top1_acc,
                        "num_gpus": cfg.NUM_GPUS,
                        "batch_size": cfg.TRAIN.BATCH_SIZE,
                        "num_epochs": cfg.SOLVER.MAX_EPOCH,
                        "num_workers": cfg.DATA_LOADER.NUM_WORKERS,
-                       "train_time_in_sec": round(avg_train_sec, 2),
-                       "elapsed_time_in_sec": round(timer.seconds(), 3)}
+                       "elapsed_time_in_sec": timer.seconds()}
         with open(result_file, "a") as f:
             writer = csv.DictWriter(f, fieldnames=result_dict.keys())
             writer.writeheader()

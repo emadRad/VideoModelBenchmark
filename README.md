@@ -22,7 +22,7 @@ Score for the CNN model with config **configs/X3D_M.yaml**:
 
     cnn_score = t_ref / t_bench * (n_gpu_ref / n_gpu_bench)
 
-- **t_ref**: time to top1 accuracy (acc@1) 16.75 on our reference machines with **n_gpu_ref=4** gpus 
+- **t_ref**: time to top1 accuracy 16.75 on our reference machines with **n_gpu_ref=4** gpus 
 - **t_bench**: time to top1 accuracy  >= 16.75 on test machine with **n_gpu_bench** gpus
 
 Score for the Transformer model with config **configs/MVIT_B_16x4.yaml**:
@@ -50,11 +50,11 @@ All the experiments were done on NVIDIA TITAN RTX gpus.
 
 Results with varying NUM_WORKERS using a single gpu.
 
-|val acc@1 | NUM_GPUs | BATCH_SIZE | EPOCHS | NUM_WORKERS | CONFIG_FILE | Elapsed Time (sec) |
-|:---:|:---:| :---:| :---:|:---:| :---:| :---:|
-| 22.70 | 1 | 16 | 20 | 8 | Kinetics/X3D_M.yaml | 7970.64 | 
-| 22.65 | 1 | 16 | 20 | 16 | Kinetics/X3D_M.yaml | 7602.86 | 
-| 22.85 | 1 | 16 | 20 | 32 | Kinetics/X3D_M.yaml | 7654.86 | 
+| GPUs |val acc@1 | NUM_GPUs | BATCH_SIZE | EPOCHS | NUM_WORKERS | CONFIG_FILE | Elapsed Time (sec) |
+|:---:|:---:|:---:| :---:| :---:|:---:| :---:| :---:|
+| 1 X NVIDIA TITAN RTX | 22.70 | 1 | 16 | 20 | 8 | Kinetics/X3D_M.yaml | 7970.64 | 
+| 1 X NVIDIA TITAN RTX | 22.65 | 1 | 16 | 20 | 16 | Kinetics/X3D_M.yaml | 7602.86 | 
+| 1 X NVIDIA TITAN RTX | 22.85 | 1 | 16 | 20 | 32 | Kinetics/X3D_M.yaml | 7654.86 | 
 
 
 
